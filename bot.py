@@ -3,12 +3,13 @@ import openai
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
-# Инициализация OpenAI клиента
+# Инициализация клиента OpenAI
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # мы его зададим на Render
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Привет! Я GPT-бот. Напиши мне что угодно — и я отвечу.")
+    await update.message.reply_text("Привет! Я GPT‑бот. Напиши мне что угодно — и я отвечу.")
 
 async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.message.text
@@ -23,4 +24,10 @@ if __name__ == "__main__":
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat))
-    app.run_polling()
+
+    app.run_webhook(
+        listen="0.0.0.0",
+        port=10000,
+        webhook_url=WEBHOOK_URL
+    )
+
