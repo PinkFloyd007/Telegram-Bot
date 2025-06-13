@@ -3,16 +3,15 @@ import openai
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
-# Инициализация клиента OpenAI
+# Инициализация OpenAI клиента
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Привет! Я GPT‑бот. Напиши мне что угодно — и я отвечу.")
+    await update.message.reply_text("Привет! Я GPT-бот. Напиши мне что угодно — и я отвечу.")
 
 async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.message.text
-
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": user}]
